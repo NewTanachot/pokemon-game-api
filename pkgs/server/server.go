@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"pokemon-game-api/pkgs/configurations"
-	"pokemon-game-api/pkgs/dependency"
+	dependency "pokemon-game-api/pkgs/dependencies"
 	"pokemon-game-api/pkgs/routes"
 
 	"github.com/gin-gonic/gin"

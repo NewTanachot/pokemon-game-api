@@ -2,7 +2,7 @@ package routes
 
 import (
 	"log"
-	"pokemon-game-api/pkgs/dependency"
+	dependency "pokemon-game-api/pkgs/dependencies"
 
 	"github.com/gin-gonic/gin"
 )
