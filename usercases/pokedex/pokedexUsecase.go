@@ -1,11 +1,17 @@
 package pokedexusc
 
-type IPokedexUsecase interface {
+import pokedexgwy "pokemon-game-api/gateways/pokedex"
+
+func NewPokedexUsecase(pokedexGateway pokedexgwy.IPokedexGateway) IPokedexUsecase {
+	return PokedexUsecase{PokedexGateway: pokedexGateway}
 }
 
-type PokedexUsecase struct {
-}
+func (p PokedexUsecase) GetPokedex() (any, error) {
+	pokemons, err := p.PokedexGateway.GetPokeapiSinnohPokedex()
 
-func NewPokedexUsecase() {
+	if err != nil {
+		return nil, err
+	}
 
+	return pokemons, nil
 }

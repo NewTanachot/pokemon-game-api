@@ -1,6 +1,6 @@
 package main
 
-import "pokemon-game-api/pkg/server"
+import "pokemon-game-api/pkgs/server"
 
 func main() {
 	server.GinSetup()

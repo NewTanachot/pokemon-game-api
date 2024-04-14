@@ -10,15 +10,15 @@ import (
 
 var (
 	once          sync.Once
-	configuration Configuration
+	configuration ServerConfiguration
 )
 
-func NewSingletonConfiguration() Configuration {
+func NewSingletonServerConfiguration() ServerConfiguration {
 	once.Do(func() {
 		// load configuration from .env file
 		godotenv.Load()
 
-		configuration = Configuration{
+		configuration = ServerConfiguration{
 			Port: getEnvPort(),
 		}
 	})
@@ -27,7 +27,7 @@ func NewSingletonConfiguration() Configuration {
 }
 
 func getEnvPort() string {
-	defaultPort := "8080"
+	defaultPort := "3000"
 	port := os.Getenv(port)
 
 	if port == "" {

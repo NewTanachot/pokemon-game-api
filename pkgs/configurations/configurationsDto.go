@@ -4,6 +4,6 @@ const (
 	port = "PORT"
 )
 
-type Configuration struct {
+type ServerConfiguration struct {
 	Port string
 }
