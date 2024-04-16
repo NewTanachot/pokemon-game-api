@@ -1,38 +1,38 @@
 package configurations
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"sync"
+)
 
-	"github.com/joho/godotenv"
+const (
+	port = "PORT"
 )
 
 var (
-	once          sync.Once
-	configuration ServerConfiguration
+	Port string
 )
 
-func NewSingletonServerConfiguration() ServerConfiguration {
-	once.Do(func() {
-		// load configuration from .env file
-		godotenv.Load()
+func AddConfigurations() error {
+	// todo use cahnnel to return error
+	port, err := getEnvPort()
 
-		configuration = ServerConfiguration{
-			Port: getEnvPort(),
-		}
-	})
+	if err != nil {
+		return err
+	}
 
-	return configuration
+	Port = port
+
+	return nil
 }
 
-func getEnvPort() string {
-	defaultPort := "3000"
+func getEnvPort() (string, error) {
 	port := os.Getenv(port)
 
 	if port == "" {
-		port = defaultPort
+		return "", errors.New("Can't get PORT from .env file")
 	}
 
-	return fmt.Sprintf(":%s", port)
+	return fmt.Sprintf(":%s", port), nil
 }

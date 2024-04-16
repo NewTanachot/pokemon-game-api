@@ -9,8 +9,7 @@ import (
 )
 
 var (
-	once       sync.Once
-	isInjected bool = false
+	once sync.Once
 
 	// pokedex
 	PokedexController pokedexctr.IPokedexController
@@ -18,18 +17,16 @@ var (
 	PokedexGateway    pokedexgwy.IPokedexGateway
 )
 
-func UseDependencyInjection() {
+func AddDependencyInjections() error {
+	// todo use cahnnel to return error
 	once.Do(func() {
 		// pokedex
 		PokedexGateway = pokedexgwy.NewPokedexGateway()
 		PokedexUsecase = pokedexusc.NewPokedexUsecase(PokedexGateway)
 		PokedexController = pokedexctr.NewPokedexController(PokedexUsecase)
 
-		isInjected = true
-		logs.WriteInfoLog("Add Dependencies to DI container")
+		logs.WriteBorderedInfoLog("Add Dependencies to DI container")
 	})
-}
 
-func IsInjected() bool {
-	return isInjected
+	return nil
 }
