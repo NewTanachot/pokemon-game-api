@@ -2,9 +2,7 @@ package server
 
 import (
 	"fmt"
-	"log"
-	"pokemon-game-api/pkgs/configurations"
-	dependency "pokemon-game-api/pkgs/dependencies"
+	"pokemon-game-api/pkgs/container"
 	"pokemon-game-api/pkgs/routes"
 
 	"github.com/gin-gonic/gin"
@@ -16,20 +14,15 @@ func GinSetup() {
 	app = gin.Default()
 	app.SetTrustedProxies([]string{})
 
-	if err := configurations.AddConfigurations(); err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	if err := dependency.AddDependencyInjections(); err != nil {
-		log.Fatalln(err.Error())
-	}
+	container.AddConfigurations()
+	container.AddDependencyInjections()
 
 	routes.UseControllerRouting(app)
 }
 
 func GinStart() {
-	logRuningServerPath(configurations.Port)
-	app.Run(configurations.Port)
+	logRuningServerPath(container.Config.Port)
+	app.Run(container.Config.Port)
 }
 
 func logRuningServerPath(port string) {
