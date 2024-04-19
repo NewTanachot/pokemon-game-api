@@ -1,4 +1,4 @@
-package container
+package di
 
 import (
 	pokedexctr "pokemon-game-api/controllers/pokedex"

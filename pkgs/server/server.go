@@ -1,8 +1,9 @@
 package server
 
 import (
-	"fmt"
-	"pokemon-game-api/pkgs/container"
+	"pokemon-game-api/pkgs/config"
+	"pokemon-game-api/pkgs/di"
+	customlog "pokemon-game-api/pkgs/logs"
 	"pokemon-game-api/pkgs/routes"
 
 	"github.com/gin-gonic/gin"
@@ -14,23 +15,13 @@ func GinSetup() {
 	app = gin.Default()
 	app.SetTrustedProxies([]string{})
 
-	container.AddConfigurations()
-	container.AddDependencyInjections()
+	config.AddGodotEnvConfigurations()
+	di.AddDependencyInjections()
 
-	routes.UseControllerRouting(app)
+	routes.MapControllerRouting(app)
 }
 
 func GinStart() {
-	logRuningServerPath(container.Config.Port)
-	app.Run(container.Config.Port)
-}
-
-func logRuningServerPath(port string) {
-	fmt.Println("")
-	fmt.Println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	fmt.Println("|                                            |")
-	fmt.Printf("|   server runing on http://localhost%s   |\n", port)
-	fmt.Println("|                                            |")
-	fmt.Println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	fmt.Println("")
+	customlog.WriteInfoRuningServerPathLog(config.Port)
+	app.Run(config.Port)
 }

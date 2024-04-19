@@ -1,17 +1,16 @@
 package routes
 
 import (
-	"pokemon-game-api/pkgs/container"
+	"pokemon-game-api/pkgs/di"
 
 	"github.com/gin-gonic/gin"
 )
 
-func UseControllerRouting(app *gin.Engine) {
+func MapControllerRouting(app *gin.Engine) {
 	apiRoute := app.Group("/api")
 	apiVerRoute := apiRoute.Group("/v1")
 
 	// pokedex route
-	pokedexRoute := apiVerRoute.Group("/pokedex", container.PokedexController.GetPokemonFromPokedex)
-	pokedexRoute.GET("")
-	pokedexRoute.GET("/:id")
+	pokedexRoute := apiVerRoute.Group("/pokedex")
+	pokedexRoute.GET("", di.PokedexController.GetPokemonFromPokedex)
 }
