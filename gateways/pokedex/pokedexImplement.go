@@ -4,13 +4,10 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"pokemon-game-api/domains/constants"
 	"pokemon-game-api/pkgs/config"
-	"pokemon-game-api/pkgs/utils/constants"
+	customerror "pokemon-game-api/pkgs/error"
 )
-
-type IPokedexGateway interface {
-	GetPokeapiSinnohPokedex() (*pokedexGatewayResponse, error)
-}
 
 type PokedexGateway struct{}
 
@@ -18,26 +15,29 @@ func NewPokedexGateway() IPokedexGateway {
 	return PokedexGateway{}
 }
 
-func (p PokedexGateway) GetPokeapiSinnohPokedex() (*pokedexGatewayResponse, error) {
+func (p PokedexGateway) GetPokeapiPokedex() (*PokedexGatewayResponse, error) {
 	response, err := http.Get(config.PokeapiBaseUrl + "pokedex/5")
 
 	if err != nil {
-		return nil, err
+		return nil, customerror.NewCustomError(constants.PokedexGwy,
+			http.StatusInternalServerError, customerror.InvalidResponse)
 	}
 
 	responseBody, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, customerror.NewCustomError(constants.PokedexGwy,
+			http.StatusInternalServerError, customerror.InvalidResponse)
 	}
 
-	pokeapiResponse := new(pokeapiPokedexResponse)
+	pokeapiResponse := new(PokeapiPokedexResponse)
 
 	if err = json.Unmarshal(responseBody, pokeapiResponse); err != nil {
-		return nil, err
+		return nil, customerror.NewCustomError(constants.PokedexGwy,
+			http.StatusInternalServerError, customerror.UnableToParseJsonToStruct)
 	}
 
-	result := pokedexGatewayResponse{
+	result := PokedexGatewayResponse{
 		Id:   uint(pokeapiResponse.ID),
 		Name: pokeapiResponse.Name,
 	}
@@ -49,7 +49,7 @@ func (p PokedexGateway) GetPokeapiSinnohPokedex() (*pokedexGatewayResponse, erro
 	}
 
 	for _, v := range pokeapiResponse.PokemonEntries {
-		result.Pokemons = append(result.Pokemons, pokedexPokemonDetail{
+		result.Pokemons = append(result.Pokemons, PokedexPokemonDetail{
 			Number: uint(v.EntryNumber),
 			Name:   v.PokemonSpecies.Name,
 			Url:    v.PokemonSpecies.URL,

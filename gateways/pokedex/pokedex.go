@@ -1,19 +1,19 @@
 package pokedexgwy
 
-type pokedexGatewayResponse struct {
+type PokedexGatewayResponse struct {
 	Id          uint
 	Name        string
 	Description string
-	Pokemons    []pokedexPokemonDetail
+	Pokemons    []PokedexPokemonDetail
 }
 
-type pokedexPokemonDetail struct {
+type PokedexPokemonDetail struct {
 	Number uint
 	Name   string
 	Url    string
 }
 
-type pokeapiPokedexResponse struct {
+type PokeapiPokedexResponse struct {
 	Descriptions []struct {
 		Description string `json:"description"`
 		Language    struct {

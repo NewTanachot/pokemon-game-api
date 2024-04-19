@@ -7,16 +7,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type PokedexController struct {
+	PokedexUsecase pokedexusc.IPokedexUsecase
+}
+
 func NewPokedexController(pokedexUsecase pokedexusc.IPokedexUsecase) IPokedexController {
 	return PokedexController{PokedexUsecase: pokedexUsecase}
 }
 
 func (p PokedexController) GetPokemonFromPokedex(c *gin.Context) {
-	pokemons, err := p.PokedexUsecase.GetPokedex()
+	result, cErr := p.PokedexUsecase.GetPokedex()
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, nil)
+	if cErr != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, cErr)
+		return
 	}
 
-	c.JSON(http.StatusOK, pokemons)
+	c.JSON(http.StatusOK, NewPokedexControllerResponse(result))
 }

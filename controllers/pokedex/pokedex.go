@@ -1,15 +1,30 @@
 package pokedexctr
 
 import (
+	"pokemon-game-api/domains/models"
 	pokedexusc "pokemon-game-api/usercases/pokedex"
-
-	"github.com/gin-gonic/gin"
 )
 
-type IPokedexController interface {
-	GetPokemonFromPokedex(c *gin.Context)
+type PokedexControllerResponse struct {
+	Id          uint                          `json:"id"`
+	Name        string                        `json:"name"`
+	Description string                        `json:"description"`
+	Pokemons    []models.PokedexPokemonDetail `json:"pokemons"`
 }
 
-type PokedexController struct {
-	PokedexUsecase pokedexusc.IPokedexUsecase
+func NewPokedexControllerResponse(usecase *pokedexusc.PokedexUsecaseResponse) *PokedexControllerResponse {
+	result := PokedexControllerResponse{
+		Id:          usecase.Id,
+		Name:        usecase.Name,
+		Description: usecase.Description,
+	}
+
+	for _, v := range usecase.Pokemons {
+		result.Pokemons = append(result.Pokemons, models.PokedexPokemonDetail{
+			Id:   v.Id,
+			Name: v.Name,
+		})
+	}
+
+	return &result
 }

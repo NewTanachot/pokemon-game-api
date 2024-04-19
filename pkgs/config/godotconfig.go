@@ -3,25 +3,30 @@ package config
 import (
 	"fmt"
 	"os"
+	"pokemon-game-api/domains/constants"
 	customlog "pokemon-game-api/pkgs/logs"
-	"pokemon-game-api/pkgs/utils/constants"
+	"sync"
 
 	"github.com/joho/godotenv"
 )
 
 var (
+	once sync.Once
+
 	Port           string
 	PokeapiBaseUrl string
 )
 
 func AddGodotEnvConfigurations() {
-	// load configuration from .env file
-	godotenv.Load()
+	once.Do(func() {
+		// load configuration from .env file
+		godotenv.Load()
 
-	setPortConfiguration()
-	setPokeapiBaseUrlConfiguration()
+		setPortConfiguration()
+		setPokeapiBaseUrlConfiguration()
 
-	customlog.WriteBorderedInfoLog("Add Configuration to DI container")
+		customlog.WriteBorderedInfoLog("Add Configuration to DI container")
+	})
 }
 
 func setPortConfiguration() {
@@ -34,10 +39,9 @@ func setPortConfiguration() {
 }
 
 func setPokeapiBaseUrlConfiguration() {
-	value := os.Getenv(constants.PokeapiBaseUrl)
-	if value == "" {
+	PokeapiBaseUrl = os.Getenv(constants.PokeapiBaseUrl)
+
+	if PokeapiBaseUrl == "" {
 		customlog.WriteFatalSetGodotEnvFailLog("pokeapi base url")
 	}
-
-	PokeapiBaseUrl = fmt.Sprintf(":%s", value)
 }

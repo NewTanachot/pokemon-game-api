@@ -1,11 +1,10 @@
 package pokedexusc
 
-import pokedexgwy "pokemon-game-api/gateways/pokedex"
+import "pokemon-game-api/domains/models"
 
-type IPokedexUsecase interface {
-	GetPokedex() (any, error)
-}
-
-type PokedexUsecase struct {
-	PokedexGateway pokedexgwy.IPokedexGateway
+type PokedexUsecaseResponse struct {
+	Id          uint
+	Name        string
+	Description string
+	Pokemons    []models.PokedexPokemonDetail
 }
