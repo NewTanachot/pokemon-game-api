@@ -6,7 +6,7 @@ import (
 )
 
 type PokedexControllerResponse struct {
-	Id          uint                          `json:"id"`
+	Id          int                           `json:"id"`
 	Name        string                        `json:"name"`
 	Description string                        `json:"description"`
 	Pokemons    []models.PokedexPokemonDetail `json:"pokemons"`

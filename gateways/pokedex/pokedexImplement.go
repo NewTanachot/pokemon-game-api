@@ -24,6 +24,7 @@ func (p PokedexGateway) GetPokeapiPokedex() (*PokedexGatewayResponse, error) {
 	}
 
 	responseBody, err := io.ReadAll(response.Body)
+	defer response.Body.Close()
 
 	if err != nil {
 		return nil, customerror.NewCustomError(constants.PokedexGwy,
@@ -38,7 +39,7 @@ func (p PokedexGateway) GetPokeapiPokedex() (*PokedexGatewayResponse, error) {
 	}
 
 	result := PokedexGatewayResponse{
-		Id:   uint(pokeapiResponse.ID),
+		Id:   pokeapiResponse.ID,
 		Name: pokeapiResponse.Name,
 	}
 
@@ -50,7 +51,7 @@ func (p PokedexGateway) GetPokeapiPokedex() (*PokedexGatewayResponse, error) {
 
 	for _, v := range pokeapiResponse.PokemonEntries {
 		result.Pokemons = append(result.Pokemons, PokedexPokemonDetail{
-			Number: uint(v.EntryNumber),
+			Number: v.EntryNumber,
 			Name:   v.PokemonSpecies.Name,
 			Url:    v.PokemonSpecies.URL,
 		})

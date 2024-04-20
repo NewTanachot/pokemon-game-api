@@ -1,14 +1,14 @@
 package pokedexgwy
 
 type PokedexGatewayResponse struct {
-	Id          uint
+	Id          int
 	Name        string
 	Description string
 	Pokemons    []PokedexPokemonDetail
 }
 
 type PokedexPokemonDetail struct {
-	Number uint
+	Number int
 	Name   string
 	Url    string
 }
