@@ -1,5 +1,5 @@
 package pokedexusc
 
 type IPokedexUsecase interface {
-	GetPokedex() (*PokedexUsecaseResponse, error)
+	GetPokedex(region string) (*PokedexUsecaseResponse, error)
 }

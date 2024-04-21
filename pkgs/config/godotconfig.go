@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
-	"pokemon-game-api/domains/constants"
+	"pokemon-game-api/pkgs/constants"
 	customlog "pokemon-game-api/pkgs/logs"
 	"sync"
 

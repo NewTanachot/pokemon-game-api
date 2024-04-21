@@ -6,24 +6,36 @@ import (
 )
 
 type CustomError struct {
-	Package      string `json:"package"`
-	ErrorCode    int    `json:"errorCode"`
-	Message      string `json:"message"`
-	ErrorMessage string `json:"errorMessage"`
+	Status  int    `json:"status"`
+	Module  string `json:"module"`
+	Message string `json:"message"`
+	Log     string `json:"log"`
 }
 
-func NewCustomError(pkg string, errCode int, msg string) error {
-	errMsg := fmt.Sprintf("error occur in %v. - %v.", pkg, msg)
-	customlog.WriteBorderedErrorLog(errMsg)
-
+func NewCustomError(module string, status int, msg string) error {
 	return CustomError{
-		Package:      pkg,
-		ErrorCode:    errCode,
-		Message:      msg,
-		ErrorMessage: errMsg,
+		Status:  status,
+		Module:  module,
+		Message: msg,
+		Log:     fmt.Sprintf("error occur in %v. - %v.", module, msg),
 	}
 }
 
+func ParseFrom(err error) CustomError {
+	return err.(CustomError)
+}
+
+func (e CustomError) WriteLog() string {
+	customlog.WriteBorderedErrorLog(e.Log)
+	return e.Log
+}
+
+func (e CustomError) GetError() error {
+	e.WriteLog()
+	return e
+}
+
 func (e CustomError) Error() string {
-	return e.ErrorMessage
+	e.WriteLog()
+	return e.Log
 }

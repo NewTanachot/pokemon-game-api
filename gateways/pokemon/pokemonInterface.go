@@ -1,5 +1,5 @@
-package pokemon
+package pokemongwy
 
 type IPokemonGateway interface {
-	GetPokeapiPokemonDetailById(id int)
+	GetPokeapiPokemonDetailById(id string) (*PokemonGatewayResponse, error)
 }

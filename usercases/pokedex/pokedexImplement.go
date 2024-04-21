@@ -3,6 +3,8 @@ package pokedexusc
 import (
 	"pokemon-game-api/domains/models"
 	pokedexgwy "pokemon-game-api/gateways/pokedex"
+	"pokemon-game-api/pkgs/constants"
+	"pokemon-game-api/pkgs/utils"
 	"strconv"
 	"strings"
 )
@@ -15,23 +17,29 @@ func NewPokedexUsecase(pokedexGateway pokedexgwy.IPokedexGateway) IPokedexUsecas
 	return PokedexUsecase{PokedexGateway: pokedexGateway}
 }
 
-func (p PokedexUsecase) GetPokedex() (*PokedexUsecaseResponse, error) {
-	pokemons, cErr := p.PokedexGateway.GetPokeapiPokedex()
+func (p PokedexUsecase) GetPokedex(region string) (*PokedexUsecaseResponse, error) {
+	regionNo := utils.GetRegionNo(region)
+	gwyResponse, cErr := p.PokedexGateway.GetPokeapiPokedex(regionNo)
 
 	if cErr != nil {
 		return nil, cErr
 	}
 
 	result := PokedexUsecaseResponse{
-		Id:          pokemons.Id,
-		Name:        pokemons.Name,
-		Description: pokemons.Description,
+		Id:   gwyResponse.ID,
+		Name: gwyResponse.Name,
 	}
 
-	for _, v := range pokemons.Pokemons {
-		result.Pokemons = append(result.Pokemons, models.PokedexPokemonDetail{
-			Id:   getPokemonIdFromUrl(v.Url),
-			Name: v.Name,
+	for _, v := range gwyResponse.Descriptions {
+		if v.Language.Name == constants.En {
+			result.Description = v.Description
+		}
+	}
+
+	for _, v := range gwyResponse.PokemonEntries {
+		result.Pokemons = append(result.Pokemons, models.PokedexPokemon{
+			Id:   getPokemonIdFromUrl(v.PokemonSpecies.URL),
+			Name: v.PokemonSpecies.Name,
 		})
 	}
 

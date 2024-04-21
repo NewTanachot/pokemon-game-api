@@ -6,11 +6,11 @@ import (
 )
 
 func WriteBorderedInfoLog(message string) {
-	fmt.Printf("-=-=-=-=- [ %v ] -=-=-=-=-\n\n", message)
+	fmt.Printf("\n-=-=-=-=- [ %v ] -=-=-=-=-\n\n", message)
 }
 
 func WriteBorderedErrorLog(message string) {
-	fmt.Printf("-=-=- [ %v ] -=-=-\n\n", message)
+	fmt.Printf("\n-=-=- [ %v ] -=-=-\n\n", message)
 }
 
 func WriteInfoRuningServerPathLog(port string) {

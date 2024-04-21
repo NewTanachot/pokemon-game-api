@@ -6,5 +6,5 @@ type PokedexUsecaseResponse struct {
 	Id          int
 	Name        string
 	Description string
-	Pokemons    []models.PokedexPokemonDetail
+	Pokemons    []models.PokedexPokemon
 }

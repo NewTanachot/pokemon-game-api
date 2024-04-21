@@ -6,10 +6,10 @@ import (
 )
 
 type PokedexControllerResponse struct {
-	Id          int                           `json:"id"`
-	Name        string                        `json:"name"`
-	Description string                        `json:"description"`
-	Pokemons    []models.PokedexPokemonDetail `json:"pokemons"`
+	Id          int                     `json:"id"`
+	Name        string                  `json:"name"`
+	Description string                  `json:"description"`
+	Pokemons    []models.PokedexPokemon `json:"pokemons"`
 }
 
 func NewPokedexControllerResponse(usecase *pokedexusc.PokedexUsecaseResponse) *PokedexControllerResponse {
@@ -20,7 +20,7 @@ func NewPokedexControllerResponse(usecase *pokedexusc.PokedexUsecaseResponse) *P
 	}
 
 	for _, v := range usecase.Pokemons {
-		result.Pokemons = append(result.Pokemons, models.PokedexPokemonDetail{
+		result.Pokemons = append(result.Pokemons, models.PokedexPokemon{
 			Id:   v.Id,
 			Name: v.Name,
 		})

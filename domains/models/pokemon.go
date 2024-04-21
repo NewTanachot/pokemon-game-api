@@ -10,3 +10,8 @@ type PokemonAvatar struct {
 	Static  string `json:"static"`
 	Animate string `json:"animate"`
 }
+
+type Region struct {
+	Name   string
+	Number int
+}
