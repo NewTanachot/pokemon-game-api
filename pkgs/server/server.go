@@ -22,6 +22,6 @@ func GinSetup() {
 }
 
 func GinStart() {
-	customlog.WriteInfoRuningServerPathLog(config.Port)
-	app.Run(config.Port)
+	customlog.WriteInfoRuningServerPathLog(*config.Port)
+	app.Run(*config.Port)
 }

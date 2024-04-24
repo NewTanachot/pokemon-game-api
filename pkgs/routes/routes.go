@@ -12,9 +12,9 @@ func MapControllerRouting(app *gin.Engine) {
 
 	// pokedex route
 	pokedexRoute := apiVerRoute.Group("/pokedex")
-	pokedexRoute.GET("", di.PokedexController.GetPokemonFromPokedex)
+	pokedexRoute.GET("", (*di.PokedexController).GetPokedexDetail)
 
 	// pokemon route
 	pokemonRoute := apiVerRoute.Group("/pokemon")
-	pokemonRoute.GET(":id", di.PokemonController.GetPokemonDetailById)
+	pokemonRoute.GET(":id", (*di.PokemonController).GetPokemonDetailById)
 }

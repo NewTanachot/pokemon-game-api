@@ -1,4 +1,4 @@
-package utils
+package pokemonutils
 
 import (
 	"pokemon-game-api/domains/models"

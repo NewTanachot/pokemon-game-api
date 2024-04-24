@@ -16,7 +16,7 @@ func NewPokemonGateway() IPokemonGateway {
 }
 
 func (p PokemonGateway) GetPokeapiPokemonDetailById(id string) (*PokemonGatewayResponse, error) {
-	url := config.PokeapiBaseUrl + "pokemon/" + id
+	url := *config.PokeapiBaseUrl + "pokemon/" + id
 	response, err := http.Get(url)
 
 	if err != nil {

@@ -23,6 +23,10 @@ func WriteInfoRuningServerPathLog(port string) {
 	fmt.Println("")
 }
 
-func WriteFatalSetGodotEnvFailLog(key string) {
-	log.Fatalf("Can not get %v value from .env file\n", key)
+func WriteGodotEnvFailPanicLog(key string) {
+	log.Panicf("Can not get %v value from .env file\n", key)
+}
+
+func WriteMongoClientPanicLog() {
+	log.Panicln("Can not connect to mongoDb and initialize client.")
 }

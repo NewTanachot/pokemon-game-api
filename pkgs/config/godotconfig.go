@@ -10,11 +10,17 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// should restructure to singleton struct like database
+
 var (
 	once sync.Once
 
-	Port           string
-	PokeapiBaseUrl string
+	Port           *string
+	MongoHost      *string
+	MongoPort      *string
+	MongoUser      *string
+	MongoPassword  *string
+	PokeapiBaseUrl *string
 )
 
 func AddGodotEnvConfigurations() {
@@ -22,26 +28,46 @@ func AddGodotEnvConfigurations() {
 		// load configuration from .env file
 		godotenv.Load()
 
-		setPortConfiguration()
+		setApplicationPortConfiguration()
+		setMongoDbConfiguration()
 		setPokeapiBaseUrlConfiguration()
 
 		customlog.WriteBorderedInfoLog("Add Configuration to DI container")
 	})
 }
 
-func setPortConfiguration() {
+func setApplicationPortConfiguration() {
 	value := os.Getenv(constants.Port)
 	if value == "" {
-		customlog.WriteFatalSetGodotEnvFailLog("port")
+		customlog.WriteGodotEnvFailPanicLog(constants.Port)
 	}
 
-	Port = fmt.Sprintf(":%s", value)
+	*Port = fmt.Sprintf(":%s", value)
 }
 
 func setPokeapiBaseUrlConfiguration() {
-	PokeapiBaseUrl = os.Getenv(constants.PokeapiBaseUrl)
+	*PokeapiBaseUrl = os.Getenv(constants.PokeapiBaseUrl)
 
-	if PokeapiBaseUrl == "" {
-		customlog.WriteFatalSetGodotEnvFailLog("pokeapi base url")
+	if *PokeapiBaseUrl == "" {
+		customlog.WriteGodotEnvFailPanicLog(constants.PokeapiBaseUrl)
+	}
+}
+
+func setMongoDbConfiguration() {
+
+	if *MongoHost = os.Getenv(constants.MongoHost); *MongoHost == "" {
+		customlog.WriteGodotEnvFailPanicLog(constants.MongoHost)
+	}
+
+	if *MongoPort = os.Getenv(constants.MongoPort); *MongoPort == "" {
+		customlog.WriteGodotEnvFailPanicLog(constants.MongoPort)
+	}
+
+	if *MongoUser = os.Getenv(constants.MongoUser); *MongoUser == "" {
+		customlog.WriteGodotEnvFailPanicLog(constants.MongoUser)
+	}
+
+	if *MongoPassword = os.Getenv(constants.MongoPassword); *MongoPassword == "" {
+		customlog.WriteGodotEnvFailPanicLog(constants.MongoPassword)
 	}
 }

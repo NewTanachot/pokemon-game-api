@@ -4,7 +4,7 @@ import (
 	"pokemon-game-api/domains/models"
 	pokedexgwy "pokemon-game-api/gateways/pokedex"
 	"pokemon-game-api/pkgs/constants"
-	"pokemon-game-api/pkgs/utils"
+	pokemonutils "pokemon-game-api/pkgs/utils/pokemon"
 	"strconv"
 	"strings"
 )
@@ -18,7 +18,7 @@ func NewPokedexUsecase(pokedexGateway pokedexgwy.IPokedexGateway) IPokedexUsecas
 }
 
 func (p PokedexUsecase) GetPokedex(region string) (*PokedexUsecaseResponse, error) {
-	regionNo := utils.GetRegionNo(region)
+	regionNo := pokemonutils.GetRegionNo(region)
 	gwyResponse, cErr := p.PokedexGateway.GetPokeapiPokedex(regionNo)
 
 	if cErr != nil {

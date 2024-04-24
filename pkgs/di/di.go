@@ -13,30 +13,25 @@ import (
 )
 
 var (
-	// pokedex
-	PokedexGateway    pokedexgwy.IPokedexGateway
-	PokedexUsecase    pokedexusc.IPokedexUsecase
-	PokedexController pokedexctr.IPokedexController
-
-	// pokemon
-	PokemonGateway    pokemongwy.IPokemonGateway
-	PokemonUsecase    pokemonusc.IPokemonUsecase
-	PokemonController pokemonctr.IPokemonController
-
-	once sync.Once
+	once              sync.Once
+	PokedexController *pokedexctr.IPokedexController
+	PokemonController *pokemonctr.IPokemonController
 )
 
 func AddDependencyInjections() {
 	once.Do(func() {
+		// mongodb
+		// mongoDb := database.NewMongoDbClient()
+
 		// pokedex
-		PokedexGateway = pokedexgwy.NewPokedexGateway()
-		PokedexUsecase = pokedexusc.NewPokedexUsecase(PokedexGateway)
-		PokedexController = pokedexctr.NewPokedexController(PokedexUsecase)
+		pokedexGateway := pokedexgwy.NewPokedexGateway()
+		pokedexUsecase := pokedexusc.NewPokedexUsecase(pokedexGateway)
+		*PokedexController = pokedexctr.NewPokedexController(pokedexUsecase)
 
 		// pokemon
-		PokemonGateway = pokemongwy.NewPokemonGateway()
-		PokemonUsecase = pokemonusc.NewPokemonUsecase(PokemonGateway)
-		PokemonController = pokemonctr.NewPokemonControllor(PokemonUsecase)
+		pokemonGateway := pokemongwy.NewPokemonGateway()
+		pokemonUsecase := pokemonusc.NewPokemonUsecase(pokemonGateway)
+		*PokemonController = pokemonctr.NewPokemonControllor(pokemonUsecase)
 
 		customlog.WriteBorderedInfoLog("Add Dependencies to DI container")
 	})

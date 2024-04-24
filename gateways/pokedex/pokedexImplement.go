@@ -16,7 +16,7 @@ func NewPokedexGateway() IPokedexGateway {
 }
 
 func (p PokedexGateway) GetPokeapiPokedex(regionNo string) (*PokedexGatewayResponse, error) {
-	url := config.PokeapiBaseUrl + "pokedex/" + regionNo
+	url := *config.PokeapiBaseUrl + "pokedex/" + regionNo
 	response, err := http.Get(url)
 
 	if err != nil {

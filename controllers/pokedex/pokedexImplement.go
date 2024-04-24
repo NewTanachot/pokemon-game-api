@@ -16,7 +16,7 @@ func NewPokedexController(pokedexUsecase pokedexusc.IPokedexUsecase) IPokedexCon
 	return PokedexController{PokedexUsecase: pokedexUsecase}
 }
 
-func (p PokedexController) GetPokemonFromPokedex(c *gin.Context) {
+func (p PokedexController) GetPokedexDetail(c *gin.Context) {
 	region := c.Query("region")
 	result, cErr := p.PokedexUsecase.GetPokedex(region)
 
