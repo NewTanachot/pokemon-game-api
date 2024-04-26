@@ -2,6 +2,7 @@ package routes
 
 import (
 	"pokemon-game-api/pkgs/di"
+	"pokemon-game-api/pkgs/poc"
 	stringutils "pokemon-game-api/pkgs/utils/string"
 
 	"github.com/gin-gonic/gin"
@@ -24,4 +25,9 @@ func MapControllerRouting(app *gin.Engine) {
 	// pokemon route
 	pokemonRoute := apiVerRoute.Group("/pokemon")
 	pokemonRoute.GET(":id", (*di.PokemonController).GetPokemonDetailById)
+
+	// POC mongo db
+	pocRoute := apiVerRoute.Group("/poc")
+	pocRoute.GET("/mongo", poc.GetUser)
+	pocRoute.POST("/mongo", poc.CreateUser)
 }
