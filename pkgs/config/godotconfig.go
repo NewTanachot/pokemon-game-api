@@ -5,6 +5,7 @@ import (
 	"os"
 	"pokemon-game-api/pkgs/constants"
 	customlog "pokemon-game-api/pkgs/logs"
+	stringutils "pokemon-game-api/pkgs/utils/string"
 	"sync"
 
 	"github.com/joho/godotenv"
@@ -14,13 +15,15 @@ import (
 
 var (
 	once sync.Once
-
-	Port           *string
-	MongoHost      *string
-	MongoPort      *string
-	MongoUser      *string
-	MongoPassword  *string
-	PokeapiBaseUrl *string
+	// need to allocate pointer when init for access address of pointer after that.
+	// ref https://edwinsiby.medium.com/runtime-error-invalid-memory-address-or-nil-pointer-dereference-golang-dd4a58ab7536
+	Port           *string = new(string)
+	MongoHost      *string = new(string)
+	MongoPort      *string = new(string)
+	MongoUser      *string = new(string)
+	MongoPassword  *string = new(string)
+	MongoDbName    *string = new(string)
+	PokeapiBaseUrl *string = new(string)
 )
 
 func AddGodotEnvConfigurations() {
@@ -38,7 +41,7 @@ func AddGodotEnvConfigurations() {
 
 func setApplicationPortConfiguration() {
 	value := os.Getenv(constants.Port)
-	if value == "" {
+	if stringutils.IsNilOrEmpty(&value) {
 		customlog.WriteGodotEnvFailPanicLog(constants.Port)
 	}
 
@@ -48,26 +51,30 @@ func setApplicationPortConfiguration() {
 func setPokeapiBaseUrlConfiguration() {
 	*PokeapiBaseUrl = os.Getenv(constants.PokeapiBaseUrl)
 
-	if *PokeapiBaseUrl == "" {
+	if stringutils.IsNilOrEmpty(PokeapiBaseUrl) {
 		customlog.WriteGodotEnvFailPanicLog(constants.PokeapiBaseUrl)
 	}
 }
 
 func setMongoDbConfiguration() {
 
-	if *MongoHost = os.Getenv(constants.MongoHost); *MongoHost == "" {
+	if *MongoHost = os.Getenv(constants.MongoHost); stringutils.IsNilOrEmpty(MongoHost) {
 		customlog.WriteGodotEnvFailPanicLog(constants.MongoHost)
 	}
 
-	if *MongoPort = os.Getenv(constants.MongoPort); *MongoPort == "" {
+	if *MongoPort = os.Getenv(constants.MongoPort); stringutils.IsNilOrEmpty(MongoPort) {
 		customlog.WriteGodotEnvFailPanicLog(constants.MongoPort)
 	}
 
-	if *MongoUser = os.Getenv(constants.MongoUser); *MongoUser == "" {
+	if *MongoUser = os.Getenv(constants.MongoUser); stringutils.IsNilOrEmpty(MongoUser) {
 		customlog.WriteGodotEnvFailPanicLog(constants.MongoUser)
 	}
 
-	if *MongoPassword = os.Getenv(constants.MongoPassword); *MongoPassword == "" {
+	if *MongoPassword = os.Getenv(constants.MongoPassword); stringutils.IsNilOrEmpty(MongoPassword) {
 		customlog.WriteGodotEnvFailPanicLog(constants.MongoPassword)
+	}
+
+	if *MongoDbName = os.Getenv(constants.MongoDbName); stringutils.IsNilOrEmpty(MongoDbName) {
+		customlog.WriteGodotEnvFailPanicLog(constants.MongoDbName)
 	}
 }

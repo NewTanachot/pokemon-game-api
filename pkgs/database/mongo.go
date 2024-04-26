@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"pokemon-game-api/pkgs/config"
+	customerror "pokemon-game-api/pkgs/error"
 	customlog "pokemon-game-api/pkgs/logs"
 	"sync"
 	"time"
@@ -19,16 +20,17 @@ var (
 
 type MongoDb struct {
 	Client           *mongo.Client
+	DbClient         *mongo.Database
 	ConnectionString string
 }
 
 func NewMongoDbClient() *MongoDb {
 	once.Do(func() {
-		connectionString := fmt.Sprintf("mongodb://%v:%v@%v:%v/",
-			config.MongoUser,
-			config.MongoPassword,
-			config.MongoHost,
-			config.MongoPort)
+		connectionString := fmt.Sprintf("mongodb://%s:%s@%s:%s/",
+			*config.MongoUser,
+			*config.MongoPassword,
+			*config.MongoHost,
+			*config.MongoPort)
 
 		// Use the SetServerAPIOptions() method to set the Stable API version to 1
 		serverAPI := options.ServerAPI(options.ServerAPIVersion1)
@@ -37,7 +39,7 @@ func NewMongoDbClient() *MongoDb {
 			ApplyURI(connectionString).
 			SetServerAPIOptions(serverAPI)
 
-		// go driver use context to set timeout for each excutetion task of mongo client
+		// go driver use context to set timeout for this task only
 		ctx, cancle := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancle()
 
@@ -45,20 +47,28 @@ func NewMongoDbClient() *MongoDb {
 		mClient, err := mongo.Connect(ctx, opts)
 
 		if err != nil {
-			customlog.WriteMongoClientPanicLog()
+			customlog.WriteMongoClientPanicLog(err.Error())
 		}
 
 		client = &MongoDb{
 			Client:           mClient,
+			DbClient:         mClient.Database(*config.MongoDbName),
 			ConnectionString: connectionString,
 		}
 	})
 
 	if isSuccess := client.PingMongoDb(); !isSuccess {
-		customlog.WriteMongoClientPanicLog()
+		customlog.WriteMongoClientPanicLog(customerror.PingDbFail)
 	}
 
 	return client
+}
+
+func (m *MongoDb) CloseMongoDb() {
+	ctx, cancle := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancle()
+
+	m.Client.Disconnect(ctx)
 }
 
 func (m *MongoDb) PingMongoDb() bool {

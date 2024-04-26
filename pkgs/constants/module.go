@@ -1,6 +1,11 @@
 package constants
 
 const (
+	// auth
+	AuthCtr  string = "Authentication Controller"
+	AuthUsc  string = "Authentication Usecase"
+	AuthRepo string = "Authentication Repository"
+
 	// pokedex
 	PokedexCtr string = "Pokedex Controller"
 	PokedexUsc string = "Pokedex Usecase"

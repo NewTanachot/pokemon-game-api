@@ -5,6 +5,7 @@ import (
 	pokedexusc "pokemon-game-api/usercases/pokedex"
 )
 
+// omitempty in json will hide json property in json response if this field have not data
 type PokedexControllerResponse struct {
 	Id          int                     `json:"id"`
 	Name        string                  `json:"name"`

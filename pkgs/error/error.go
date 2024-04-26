@@ -12,7 +12,7 @@ type CustomError struct {
 	Log     string `json:"log"`
 }
 
-func NewCustomError(module string, status int, msg string) error {
+func NewCustomError(module string, status int, msg string) CustomError {
 	return CustomError{
 		Status:  status,
 		Module:  module,
@@ -25,14 +25,14 @@ func ParseFrom(err error) CustomError {
 	return err.(CustomError)
 }
 
-func (e CustomError) WriteLog() string {
-	customlog.WriteBorderedErrorLog(e.Log)
-	return e.Log
-}
-
 func (e CustomError) GetError() error {
 	e.WriteLog()
 	return e
+}
+
+func (e CustomError) WriteLog() string {
+	customlog.WriteBorderedErrorLog(e.Log)
+	return e.Log
 }
 
 func (e CustomError) Error() string {
