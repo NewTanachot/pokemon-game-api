@@ -24,19 +24,21 @@ type MongoDb struct {
 	ConnectionString string
 }
 
-func NewMongoDbClient() *MongoDb {
+func NewMongoDbClient(connectionString ...string) *MongoDb {
 	once.Do(func() {
-		connectionString := fmt.Sprintf("mongodb://%s:%s@%s:%s/",
-			*config.MongoUser,
-			*config.MongoPassword,
-			*config.MongoHost,
-			*config.MongoPort)
+		var cStr string
+
+		if len(connectionString) == 0 {
+			cStr = fmt.Sprintf("mongodb://%s:%s@%s:%s/", *config.MongoUser, *config.MongoPassword, *config.MongoHost, *config.MongoPort)
+		} else {
+			cStr = connectionString[0]
+		}
 
 		// Use the SetServerAPIOptions() method to set the Stable API version to 1
 		serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 		opts := options.
 			Client().
-			ApplyURI(connectionString).
+			ApplyURI(cStr).
 			SetServerAPIOptions(serverAPI)
 
 		// go driver use context to set timeout for this task only
@@ -53,7 +55,7 @@ func NewMongoDbClient() *MongoDb {
 		client = &MongoDb{
 			Client:           mClient,
 			DbClient:         mClient.Database(*config.MongoDbName),
-			ConnectionString: connectionString,
+			ConnectionString: cStr,
 		}
 	})
 
