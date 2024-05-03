@@ -24,6 +24,7 @@ var (
 	MongoPassword  *string = new(string)
 	MongoDbName    *string = new(string)
 	PokeapiBaseUrl *string = new(string)
+	SecretKey      *string = new(string)
 )
 
 func AddGodotEnvConfigurations() {
@@ -54,6 +55,10 @@ func setPokeapiBaseUrlConfiguration() {
 	if stringutils.IsNilOrEmpty(PokeapiBaseUrl) {
 		customlog.WriteGodotEnvFailPanicLog(constants.PokeapiBaseUrl)
 	}
+}
+
+func setSecretKeyConfiguration() {
+
 }
 
 func setMongoDbConfiguration() {

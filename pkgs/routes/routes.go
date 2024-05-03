@@ -16,7 +16,8 @@ func MapControllerRouting(app *gin.Engine) {
 	authRoute := apiVerRoute.Group("/auth")
 	authRoute.GET(stringutils.Empty, (*di.AuthController).GetAllUser)
 	authRoute.GET(":id", (*di.AuthController).GetUserById)
-	authRoute.POST(stringutils.Empty, (*di.AuthController).Register)
+	authRoute.POST("/register", (*di.AuthController).Register)
+	authRoute.POST("/login", (*di.AuthController).Login)
 
 	// pokedex route
 	pokedexRoute := apiVerRoute.Group("/pokedex")

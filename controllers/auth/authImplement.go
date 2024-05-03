@@ -5,9 +5,15 @@ import (
 	"pokemon-game-api/domains/models"
 	"pokemon-game-api/pkgs/constants"
 	customerror "pokemon-game-api/pkgs/error"
+	stringutils "pokemon-game-api/pkgs/utils/string"
 	authusc "pokemon-game-api/usercases/auth"
+	"time"
+
+	"pokemon-game-api/pkgs/config"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type AuthController struct {
@@ -46,7 +52,43 @@ func (a AuthController) Register(c *gin.Context) {
 }
 
 func (a AuthController) Login(c *gin.Context) {
+	req := new(LoginRequest)
+	if err := c.BindJSON(req); err != nil {
+		cErr := customerror.NewCustomError(constants.AuthColl,
+			http.StatusBadRequest, customerror.InvalidInput+err.Error())
 
+		c.AbortWithStatusJSON(cErr.Status, cErr.GetError())
+		return
+	}
+
+	uscResp, cErr := a.AuthUsecase.GetUserById(req.Id)
+
+	if cErr != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, cErr.Error())
+		return
+	}
+
+	// TODO: move to usecase
+	if uscResp.Password != req.Password {
+		cErr := customerror.NewCustomError(constants.AuthColl,
+			http.StatusBadRequest, customerror.WrongPassword)
+
+		c.AbortWithStatusJSON(cErr.Status, cErr.GetError())
+		return
+	}
+
+	// TODO: move to usecase
+	jwt, err := createJwtToken(uscResp.Id)
+
+	if err != nil {
+		cErr := customerror.NewCustomError(constants.AuthColl,
+			http.StatusBadRequest, customerror.UnableToCreateJWT+" "+err.Error())
+
+		c.AbortWithStatusJSON(cErr.Status, cErr.GetError())
+		return
+	}
+
+	c.JSONP(http.StatusOK, jwt)
 }
 
 func (a AuthController) GetAllUser(c *gin.Context) {
@@ -181,4 +223,21 @@ func (a AuthController) GetUserById(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+}
+
+// TODO: move to usecase or pkg
+func createJwtToken(userId primitive.ObjectID) (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
+	claim := token.Claims.(jwt.MapClaims)
+	claim["user_id"] = userId
+	claim["exp"] = time.Now().Add(168 * time.Hour).Unix()
+
+	secretKeyBytes := []byte(*config.SecretKey)
+	resultJwt, err := token.SignedString(secretKeyBytes)
+
+	if err != nil {
+		return stringutils.Empty, err
+	}
+
+	return resultJwt, nil
 }

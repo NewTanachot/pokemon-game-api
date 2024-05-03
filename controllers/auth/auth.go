@@ -31,3 +31,9 @@ type PokemonDto struct {
 	Sequence int                `json:"squence"`
 	Moves    []models.Move      `json:"moves"`
 }
+
+type LoginRequest struct {
+	Id       string `json:"id"`
+	UserName string `json:"user_name"`
+	Password string `json:"password"`
+}

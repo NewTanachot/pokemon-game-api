@@ -8,4 +8,5 @@ const (
 	MongoPassword  string = "MONGO_PASSWORD"
 	MongoDbName    string = "MONGO_DBNAME"
 	PokeapiBaseUrl string = "POKEAPI_BASE_URL"
+	SecretKey      string = "SECRETKEY"
 )
