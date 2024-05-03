@@ -1,6 +1,10 @@
 package authusc
 
-import "pokemon-game-api/domains/entities"
+import (
+	"pokemon-game-api/domains/entities"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type CreateUserRequest struct {
 	UserName    string
@@ -9,10 +13,11 @@ type CreateUserRequest struct {
 }
 
 type UserResponse struct {
-	Id          string
+	Id          primitive.ObjectID
 	UserName    string
 	DisplayName string
 	Password    string
 	IvKey       string
 	Pokemons    []entities.Pokemon
+	CreateAt    primitive.Timestamp
 }

@@ -193,6 +193,7 @@ func GetPokemon(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatusJSON(500, err)
+		return
 	}
 
 	r := make([]Pokemon, 0, 2)

@@ -22,9 +22,10 @@ func (a AuthController) Register(c *gin.Context) {
 	ctrRequest := new(RegisterRequest)
 	if err := c.BindJSON(ctrRequest); err != nil {
 		cErr := customerror.NewCustomError(constants.AuthColl,
-			http.StatusBadRequest, customerror.InvalidInput)
+			http.StatusBadRequest, customerror.InvalidInput+err.Error())
 
 		c.AbortWithStatusJSON(cErr.Status, cErr.GetError())
+		return
 	}
 
 	uscRequest := authusc.CreateUserRequest{
@@ -38,6 +39,7 @@ func (a AuthController) Register(c *gin.Context) {
 	if cErr != nil {
 		pErr := customerror.ParseFrom(cErr)
 		c.AbortWithStatusJSON(pErr.Status, pErr.GetError())
+		return
 	}
 
 	c.JSON(http.StatusOK, result)
@@ -54,9 +56,46 @@ func (a AuthController) GetAllUser(c *gin.Context) {
 		// pErr := customerror.ParseFrom(cErr)
 		// c.AbortWithStatusJSON(pErr.Status, pErr.Error())
 		c.AbortWithStatusJSON(http.StatusBadRequest, cErr.Error())
+		return
 	}
 
-	result := new([]UserResponse)
+	result := []UserResponse{}
+
+	// for _, v := range *uscResponse {
+	// 	result = append(result, UserResponse{
+	// 		Id: v.Id,
+	// 		UserName: v.UserName,
+	// 		DisplayName: v.DisplayName,
+	// 		Password: v.Password,
+	// 		IvKey: v.IvKey,
+	// 		Pokemons: func() []PokemonDto {
+	// 			pokeTemp := []PokemonDto{}
+	// 			for _, j := range v.Pokemons {
+	// 				pokeTemp = append(pokeTemp, PokemonDto{
+	// 					Id: j.Id,
+	// 					Name: j.Name,
+	// 					Nickname: j.Nickname,
+	// 					Level: j.Level,
+	// 					Sequence: j.Sequence,
+	// 					Moves: func() []models.Move {
+	// 						moveTemp := []models.Move{}
+	// 						for _, k := range j.Moves {
+	// 							moveTemp = append(moveTemp, models.Move{
+	// 								Id: k.Id,
+	// 								Sequence: k.Sequence,
+	// 								Name: k.Name,
+	// 								Type: k.Type,
+	// 							})
+	// 						}
+	// 						return moveTemp
+	// 					}(),
+	// 				})
+	// 			}
+	// 			return pokeTemp
+	// 		}(),
+	// 	})
+	// }
+
 	for _, v := range *uscResponse {
 		PokemonDtos := []PokemonDto{}
 
@@ -82,12 +121,13 @@ func (a AuthController) GetAllUser(c *gin.Context) {
 			})
 		}
 
-		*result = append(*result, UserResponse{
+		result = append(result, UserResponse{
 			Id:          v.Id,
 			UserName:    v.UserName,
 			DisplayName: v.DisplayName,
 			Password:    v.Password,
 			IvKey:       v.IvKey,
+			CreateAt:    v.CreateAt.T,
 			Pokemons:    PokemonDtos,
 		})
 	}
@@ -101,6 +141,7 @@ func (a AuthController) GetUserById(c *gin.Context) {
 
 	if cErr != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, cErr.Error())
+		return
 	}
 
 	result := UserResponse{
@@ -109,6 +150,7 @@ func (a AuthController) GetUserById(c *gin.Context) {
 		DisplayName: uscResp.DisplayName,
 		Password:    uscResp.Password,
 		IvKey:       uscResp.IvKey,
+		CreateAt:    uscResp.CreateAt.T,
 		Pokemons: func() []PokemonDto {
 			tempPokemon := []PokemonDto{}
 			for _, v := range uscResp.Pokemons {

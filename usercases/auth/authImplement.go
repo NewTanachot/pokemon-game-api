@@ -3,7 +3,9 @@ package authusc
 import (
 	"pokemon-game-api/domains/entities"
 	authrepo "pokemon-game-api/repositories/auth"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -23,6 +25,10 @@ func (a AuthUsecase) CreateUser(user *CreateUserRequest) (*mongo.InsertOneResult
 		UserName:    user.UserName,
 		DisplayName: user.DisplayName,
 		Password:    user.Password,
+		// CreateAt:    primitive.Timestamp{T: uint32(time.Now().Unix())},
+		BaseEntity: entities.BaseEntity{
+			CreateAt: primitive.Timestamp{T: uint32(time.Now().Unix())},
+		},
 	}
 
 	result, cErr := a.AuthRepository.CreateUser(&userEnt)
@@ -51,6 +57,7 @@ func (a AuthUsecase) GetAllUser() (*[]UserResponse, error) {
 			Password:    v.Password,
 			IvKey:       v.IvKey,
 			Pokemons:    v.Pokemons,
+			CreateAt:    v.CreateAt,
 		})
 	}
 
