@@ -38,3 +38,6 @@ Thumbs.db
 
 # debug file
 __debug*
+
+# goland
+.idea
