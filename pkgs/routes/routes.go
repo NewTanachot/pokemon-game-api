@@ -40,4 +40,6 @@ func MapControllerRouting(app *gin.Engine) {
 	pocRoute.POST("/pokemon", poc.CreatePokemon)
 
 	pocRoute.DELETE("/user/collection", poc.DropUserCollection)
+
+	apiRoute.GET("/test/query", poc.TestQuery)
 }
